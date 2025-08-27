@@ -300,39 +300,6 @@
             text-decoration: underline;
         }
 
-        /* Pending Biographies in Admin */
-        .pending-bio-item {
-            background-color: #f0f8ff; /* AliceBlue */
-            border: 1px dashed #a7d9f7;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap; /* Allow wrapping of content and buttons */
-            font-size: 0.95em;
-        }
-        .pending-bio-item span {
-            flex-grow: 1; /* Allow text to take available space */
-            margin-right: 10px;
-            margin-bottom: 5px; /* For wrapping */
-        }
-        .pending-bio-item .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px; /* Space between buttons */
-        }
-        .pending-bio-item .actions button {
-            padding: 6px 12px;
-            font-size: 0.9em;
-            border-radius: 4px;
-            background-color: #007bff; /* Edit button default color */
-        }
-        .pending-bio-item .actions button:hover {
-            background-color: #0056b3;
-        }
-
         /* Admin Editor */
         .admin-editor-area {
             background-color: #fdfefe; /* Very light white/blue */
@@ -348,6 +315,26 @@
             color: #2C3E50;
             font-size: 1.6em;
             margin-top: 0;
+        }
+        .admin-editor-form .image-insert-section {
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        .admin-editor-form .image-insert-section label {
+            margin-bottom: 0; /* Align label with input */
+            flex-grow: 1;
+        }
+        .admin-editor-form .image-insert-section input {
+            margin-bottom: 0; /* Remove bottom margin to align */
+            flex-grow: 3;
+        }
+        .admin-editor-form .image-insert-section button {
+            margin-bottom: 0; /* Remove bottom margin to align */
+            flex-shrink: 0;
+            padding: 10px 15px;
+            font-size: 0.95em;
         }
         #previewArea {
             border: 1px solid #e0e0e0;
@@ -488,24 +475,21 @@
             .bio-card {
                 padding: 15px;
             }
-            .pending-bio-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .pending-bio-item span {
-                margin-bottom: 10px;
-                margin-right: 0;
-            }
-            .pending-bio-item .actions {
-                width: 100%;
-                justify-content: flex-end; /* Align buttons to the right */
-            }
             .admin-editor-area {
                 padding: 15px;
             }
             .admin-editor-form button {
                 width: calc(100% - 10px); /* Stack editor buttons */
                 margin-right: 0;
+                margin-bottom: 10px;
+            }
+            .admin-editor-form .image-insert-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .admin-editor-form .image-insert-section input,
+            .admin-editor-form .image-insert-section button {
+                width: 100%;
                 margin-bottom: 10px;
             }
             .ad-unit {
@@ -538,7 +522,7 @@
         <a href="#" data-target="home-section">Home</a>
         <a href="#" data-target="categories-section">Categories</a>
         <a href="#" data-target="submit-bio-section" id="submitBioNavLink">Submit a Biography</a>
-        <a href="#" data-target="admin-section" id="adminPublishNavLink" class="hidden">Admin Publish</a> <!-- Hidden by default -->
+        <a href="#" data-target="admin-section" id="adminEditorNavLink" class="hidden">Admin Editor</a> <!-- Renamed and hidden by default -->
         <a href="#" data-target="auth-section">Sign Up / Login</a>
         <a href="#" data-target="about-us-section">About Us</a>
         <a href="#" data-target="contact-section">Contact</a>
@@ -579,9 +563,9 @@
 
             <h3>Latest Additions</h3>
             <ul id="latest-additions-list">
-                <li><a href="#new-bio-1">Biography of [New Person's Name]</a></li>
-                <li><a href="#new-bio-2">The Achievements of [Another New Person's Name]</a></li>
-                <!-- More latest additions will be appended here by JS -->
+                <!-- Latest additions will be appended here by JS -->
+                <li><div><h4>Sample Bio 1</h4><p>This is a sample biography automatically added on load.</p><a href="#">Read More</a></div></li>
+                <li><div><h4>Sample Bio 2</h4><p>Another sample biography to demonstrate the list functionality.</p><a href="#">Read More</a></div></li>
             </ul>
         </div>
 
@@ -625,40 +609,40 @@
                 <input type="hidden" name="adminEmail" value="ndayikezeapollinaire@gmail.com">
 
                 <button type="submit">Send Submission</button>
-                <p class="disclaimer"><strong>Note for Deployment:</strong> This form collects data. To make it "live" and fully functional, you **must integrate a backend server** (e.g., Node.js, Python, PHP) to securely: 1) receive this data, 2) store it in a database, and 3) send email notifications. Client-side code cannot perform these actions securely or persistently.</p>
+                <p class="disclaimer"><strong>Note for Deployment:</strong> This form collects data. To make it "live" and fully functional, you **must integrate a backend server** (e.g., Node.js, Python, PHP) to securely: 1) receive this data, 2) store it in a database, and 3) send email notifications. **Submissions are currently published directly to "Latest Additions" for demo purposes, without admin review.** Client-side code cannot perform these actions securely or persistently.</p>
             </form>
         </div>
 
-        <!-- Admin Section -->
+        <!-- Admin Section (now focused on direct editing and publishing) -->
         <div id="admin-section" class="admin-section section-content hidden">
-            <h3>Admin Dashboard: Manage Biographies</h3>
-            <p>This is a simulated admin area. In a real application, this would be password-protected and connect to a backend database.</p>
-            <p>Review submitted biographies below. Click 'Edit' to load them into the editor for modifications and preview, then 'Publish' to add them to the "Latest Additions" on the Home page.</p>
-
-            <h4>Pending Biographies</h4>
-            <div id="pendingBiographiesList">
-                <p>No new biographies pending review.</p>
-            </div>
+            <h3>Admin Dashboard: Direct Editor</h3>
+            <p>This is a simulated admin area for direct content creation. In a real application, this would be password-protected and connect to a backend database for permanent storage.</p>
+            <p>Use the editor below to create new biographies or paste content, then 'Publish' to add them directly to the "Latest Additions" on the Home page.</p>
 
             <div class="admin-editor-area">
                 <h4>Biography Editor</h4>
-                <p class="disclaimer"><strong>Editor Disclaimer:</strong> This is a simple textarea for demonstration. In a real application, a powerful Rich Text Editor (e.g., TinyMCE, CKEditor) would be integrated here to allow true WYSIWYG editing, and image uploads would go to a server. Basic HTML tags like `&lt;p&gt;`, `&lt;strong&gt;`, `&lt;em&gt;`, `&lt;ul&gt;`, `&lt;li&gt;`, `&lt;img src='URL'&gt;` are supported in preview for demo purposes. Using `&lt;img src="data:image/jpeg;base64,...` also works for direct image embedding.</p>
+                <p class="disclaimer"><strong>Editor Disclaimer:</strong> This is a simple textarea. In a real application, a powerful Rich Text Editor (e.g., TinyMCE, CKEditor) would be integrated here to allow true WYSIWYG editing, and image uploads would go to a server. Basic HTML tags like `&lt;p&gt;`, `&lt;strong&gt;`, `&lt;em&gt;`, `&lt;ul&gt;`, `&lt;li&gt;`, `&lt;img src='URL'&gt;` are supported in preview for demo purposes. Using `&lt;img src="data:image/jpeg;base64,...` also works for direct image embedding. **You can paste text directly into the "Biography Content" area.**</p>
                 <form id="adminEditorForm" class="admin-editor-form">
-                    <input type="hidden" id="editorBioIndex"> <!-- To keep track of which pending bio is being edited -->
+                    <input type="hidden" id="editorBioIndex"> <!-- Still here for potential future enhancements -->
 
                     <label for="editorBioTitle">Title:</label>
                     <input type="text" id="editorBioTitle" required>
 
-                    <label for="editorSubmitterName">Submitter Name:</label>
+                    <label for="editorSubmitterName">Author/Submitter Name (Optional):</label>
                     <input type="text" id="editorSubmitterName" placeholder="Anonymous">
 
                     <label for="editorBioDetails">Biography Content (HTML allowed for demo):</label>
                     <textarea id="editorBioDetails" rows="10" placeholder="Write or paste biography content here."></textarea>
 
+                    <div class="image-insert-section">
+                        <label for="imageUrlInput">Insert Image URL:</label>
+                        <input type="text" id="imageUrlInput" placeholder="Paste image URL here (e.g., https://example.com/image.jpg)">
+                        <button type="button" id="insertImageButton">Insert Image</button>
+                    </div>
+
                     <div class="button-group">
                         <button type="button" id="previewButton">Preview</button>
-                        <button type="button" id="saveChangesButton">Save Changes (to pending)</button>
-                        <button type="submit" id="publishEditorContentButton">Publish</button>
+                        <button type="submit" id="publishEditorContentButton">Publish New Biography</button>
                         <button type="button" id="clearEditorButton">Clear Editor</button>
                     </div>
                 </form>
@@ -668,7 +652,7 @@
                     <p>Your content will appear here when you click 'Preview'.</p>
                 </div>
             </div>
-            <p class="disclaimer"><strong>Persistence Disclaimer:</strong> All changes and publishing actions here are **client-side only** and will **not persist** upon page refresh. A **backend server with a database** is required for permanent storage and real content management. **Server-side sanitization of HTML is crucial to prevent XSS vulnerabilities** if user-submitted content is allowed.</p>
+            <p class="disclaimer"><strong>Persistence Disclaimer:</strong> All publishing actions here are **client-side only** and will **not persist** upon page refresh. A **backend server with a database** is required for permanent storage and real content management. **Server-side sanitization of HTML is crucial to prevent XSS vulnerabilities** if user-submitted content is allowed.</p>
         </div>
         <!-- End Admin Section -->
 
@@ -739,7 +723,7 @@
 
     <footer>
         <p>&copy; 2025 Global Biographies. All rights reserved.</p>
-        <p class="disclaimer"><strong>Monetization Note:</strong> These are placeholder ad units. To monetize your site, replace these divs with actual ad network code (e.g., Google AdSense, Media.net scripts) after signing up and getting approval from an ad network.</p>
+        <p class="disclaimer"><strong>Monetization Note:</strong> These are placeholder ad units. To monetize your site, replace these divs with actual ad network code (e.g., Google AdSense, Media.net scripts) after signing up and getting approval from an ad network. **Directly displaying random images from Amazon without their official API/program is not feasible or permissible.**</p>
     </footer>
 
     <script>
@@ -752,9 +736,8 @@
             const contactMessageForm = document.getElementById('contactMessageForm');
 
             // Admin specific elements
-            const adminPublishNavLink = document.getElementById('adminPublishNavLink');
+            const adminEditorNavLink = document.getElementById('adminEditorNavLink');
             const adminSection = document.getElementById('admin-section');
-            const pendingBiographiesList = document.getElementById('pendingBiographiesList');
             const latestAdditionsList = document.getElementById('latest-additions-list');
 
             // Admin Editor elements
@@ -763,8 +746,9 @@
             const editorBioTitle = document.getElementById('editorBioTitle');
             const editorSubmitterName = document.getElementById('editorSubmitterName');
             const editorBioDetails = document.getElementById('editorBioDetails');
+            const imageUrlInput = document.getElementById('imageUrlInput');
+            const insertImageButton = document.getElementById('insertImageButton');
             const previewButton = document.getElementById('previewButton');
-            const saveChangesButton = document.getElementById('saveChangesButton');
             const publishEditorContentButton = document.getElementById('publishEditorContentButton');
             const clearEditorButton = document.getElementById('clearEditorButton');
             const previewArea = document.getElementById('previewArea');
@@ -784,93 +768,94 @@
             const bottomLeaderboardAd = document.getElementById('bottomLeaderboardAd');
 
 
-            // Client-side array to simulate pending biographies (NOT persistent)
-            let pendingBios = [];
             // Simulate admin login state (NOT secure)
             const ADMIN_EMAIL = "ndayikezeapollinaire@gmail.com";
-            let currentLoggedInUser = localStorage.getItem('loggedInUser') || null; // Simulates a logged-in user
+            let currentLoggedInUser = localStorage.getItem('loggedInUser') || null;
 
-            // Simulated Ad Data
+            // Simulated Ad Data - Using generic placeholders since Amazon integration is not possible client-side
             const adData = [
                 {
-                    title: "Discover New Biographies",
-                    image: "https://picsum.photos/id/1018/300/250",
+                    title: "Exclusive Deals on Books!",
+                    image: "https://picsum.photos/id/24/300/250",
                     link: "#",
-                    text: "Expand your knowledge with our vast collection of inspiring lives.",
+                    text: "Find your next great read at unbeatable prices. Shop now!",
                     type: "square"
                 },
                 {
-                    title: "Support Global Biographies",
-                    image: "https://picsum.photos/id/1016/728/90",
+                    title: "Travel the World - Big Savings!",
+                    image: "https://picsum.photos/id/1040/728/90",
                     link: "#",
-                    text: "Help us keep sharing incredible stories from around the world.",
+                    text: "Book your dream vacation today and explore new cultures.",
                     type: "leaderboard"
                 },
                 {
-                    title: "Explore History's Greatest Minds",
-                    image: "https://picsum.photos/id/1015/300/250",
+                    title: "Tech Gadgets You'll Love",
+                    image: "https://picsum.photos/id/1068/300/250",
                     link: "#",
-                    text: "From ancient philosophers to modern innovators.",
+                    text: "Innovate your life with the latest in smart technology.",
                     type: "square"
                 },
                 {
-                    title: "Your Brand Here - Advertise With Us!",
-                    image: "https://via.placeholder.com/970x90/556B2F/FFFFFF?text=Advertise+Your+Brand",
+                    title: "Fashion for Every Occasion",
+                    image: "https://via.placeholder.com/970x90/FFD700/000000?text=Shop+Latest+Trends",
                     link: "#",
-                    text: "Reach a curious and engaged audience.",
+                    text: "Discover stylish outfits for men and women.",
                     type: "banner"
                 },
                 {
-                    title: "Read Inspiring Stories",
-                    image: "https://picsum.photos/id/1025/300/250",
+                    title: "Home Decor & Furnishings",
+                    image: "https://picsum.photos/id/237/300/250",
                     link: "#",
-                    text: "Dive deep into the lives of extraordinary people.",
+                    text: "Transform your living space with unique designs.",
                     type: "square"
                 },
                 {
-                    title: "Become a Patron!",
-                    image: "https://picsum.photos/id/1019/728/90",
+                    title: "Health & Wellness Products",
+                    image: "https://picsum.photos/id/287/728/90",
                     link: "#",
-                    text: "Support our mission to chronicle human achievement.",
+                    text: "Boost your well-being with our curated selection.",
                     type: "leaderboard"
                 }
             ];
 
-            function getRandomAd(type) {
-                const filteredAds = adData.filter(ad => ad.type === type);
-                return filteredAds[Math.floor(Math.random() * filteredAds.length)];
-            }
+            let currentTopBannerIndex = 0;
+            let currentInContentIndex = 1; // Start with a different ad
+            let currentBottomLeaderboardIndex = 2; // Start with another different ad
 
-            function displayAd(adElement, type) {
-                const ad = getRandomAd(type);
-                if (ad) {
-                    adElement.innerHTML = `
-                        <a href="${ad.link}" target="_blank">
-                            <img src="${ad.image}" alt="${ad.title}">
-                            <p><strong>${ad.title}</strong></p>
-                            <p>${ad.text}</p>
-                            <span class="ad-label">Advertisement</span>
-                        </a>
-                    `;
+            function displaySimulatedAd(adElement, adType, currentIndex) {
+                const filteredAds = adData.filter(ad => ad.type === adType);
+                if (filteredAds.length === 0) {
+                    adElement.innerHTML = '<p>[AD SPACE] No simulated ads available for this type.</p>';
+                    return;
                 }
+                const ad = filteredAds[currentIndex % filteredAds.length];
+                
+                adElement.innerHTML = `
+                    <a href="${ad.link}" target="_blank" onclick="alert('This is a simulated ad click! In a real scenario, you would go to the advertiser\\'s site.'); return false;">
+                        <img src="${ad.image}" alt="${ad.title}" style="width: 100%; height: auto; max-height: ${adElement.classList.contains('ad-square') ? '250px' : '90px'}; object-fit: contain;">
+                        <p><strong>${ad.title}</strong></p>
+                        <p>${ad.text}</p>
+                        <span class="ad-label">Advertisement</span>
+                    </a>
+                `;
+                return (currentIndex + 1) % filteredAds.length; // Return next index
             }
             
             function refreshAds() {
-                displayAd(topBannerAd, 'banner');
-                displayAd(inContentAd, 'square');
-                displayAd(bottomLeaderboardAd, 'leaderboard');
+                currentTopBannerIndex = displaySimulatedAd(topBannerAd, 'banner', currentTopBannerIndex);
+                currentInContentIndex = displaySimulatedAd(inContentAd, 'square', currentInContentIndex);
+                currentBottomLeaderboardIndex = displaySimulatedAd(bottomLeaderboardAd, 'leaderboard', currentBottomLeaderboardIndex);
             }
 
 
             // Function to update UI based on login state
             function updateLoginUI() {
                 if (currentLoggedInUser === ADMIN_EMAIL) {
-                    adminPublishNavLink.classList.remove('hidden');
+                    adminEditorNavLink.classList.remove('hidden');
                     logoutButton.classList.remove('hidden');
                     console.log(`Admin "${ADMIN_EMAIL}" is logged in.`);
                 } else {
-                    adminPublishNavLink.classList.add('hidden');
-                    // Hide admin section content if not admin, ensure it's not visible
+                    adminEditorNavLink.classList.add('hidden');
                     if (!adminSection.classList.contains('hidden')) {
                          adminSection.classList.add('hidden');
                     }
@@ -886,32 +871,11 @@
                 });
             }
 
-            // Function to render pending biographies in the admin section
-            function renderPendingBiographies() {
-                if (pendingBios.length === 0) {
-                    pendingBiographiesList.innerHTML = '<p>No new biographies pending review.</p>';
-                    return;
-                }
-                pendingBiographiesList.innerHTML = '';
-                pendingBios.forEach((bio, index) => {
-                    const bioItem = document.createElement('div');
-                    bioItem.classList.add('pending-bio-item');
-                    bioItem.innerHTML = `
-                        <span><strong>${bio.title}</strong> by ${bio.submitter || 'Anonymous'}</span>
-                        <span class="actions">
-                            <button data-index="${index}" class="edit-action">Edit</button>
-                        </span>
-                    `;
-                    pendingBiographiesList.appendChild(bioItem);
-                });
-            }
-
             // Function to add a published biography to the latest additions on the Home page
             function addPublishedBiographyToHome(bio) {
                 const newListItem = document.createElement('li');
-                // Use innerHTML to allow rendered HTML from the editor
                 // IMPORTANT: In a real app, sanitize 'bio.details' heavily to prevent XSS attacks if it comes from user input.
-                newListItem.innerHTML = `<div><h4>${bio.title}</h4><p>${bio.details}</p><a href="#">Read More</a></div>`;
+                newListItem.innerHTML = `<div><h4>${bio.title}</h4>${bio.details}<a href="#">Read More</a></div>`;
                 latestAdditionsList.prepend(newListItem); // Add to the top of the list
             }
 
@@ -921,14 +885,26 @@
                 editorBioTitle.value = '';
                 editorSubmitterName.value = '';
                 editorBioDetails.value = '';
+                imageUrlInput.value = '';
                 previewArea.innerHTML = '<p>Your content will appear here when you click \'Preview\'.</p>';
             }
+
+            // Function to insert text at the current cursor position in a textarea
+            function insertTextAtCursor(textarea, text) {
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const value = textarea.value;
+                textarea.value = value.substring(0, start) + text + value.substring(end);
+                textarea.selectionStart = textarea.selectionEnd = start + text.length;
+                textarea.focus();
+            }
+
 
             // Show the initial section (Home) on page load
             document.getElementById('home-section').classList.remove('hidden');
             updateLoginUI(); // Initial UI update based on stored login state
             refreshAds(); // Display initial ads
-            setInterval(refreshAds, 10000); // Refresh ads every 10 seconds
+            setInterval(refreshAds, 5000); // Refresh ads every 5 seconds (5000ms)
 
             // Add click event listeners to navigation links
             navLinks.forEach(link => {
@@ -953,10 +929,10 @@
                             targetSection.classList.remove('hidden'); // Show the target section
                             targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-                            // Special handling for admin section: render pending bios when opened
+                            // Special handling for admin section: clear editor when opened
                             if (targetId === 'admin-section') {
-                                renderPendingBiographies();
                                 clearEditor(); // Clear editor when opening admin section
+                                adminEditorForm.style.display = 'block'; // Ensure editor form is visible when admin section is opened
                             }
                         }
                     }
@@ -1000,15 +976,14 @@
                     hasFile: fileInput.files.length > 0
                 };
 
-                pendingBios.push(newBio); // Add to our client-side pending list
-                alert(`Biography "${bioTitle}" submitted successfully! It is now pending admin review. \n\n(IMPORTANT for deployment: This data and any attached file would be sent to a backend server for storage, and an email notification sent to ${adminEmail}. Client-side code cannot do this securely or persistently.)`);
+                // Directly publish user submission to the home page in this simplified model
+                addPublishedBiographyToHome(newBio);
+                alert(`Biography "${bioTitle}" submitted and published directly to Latest Additions! \n\n(IMPORTANT for deployment: This data and any attached file would be sent to a backend server for storage, and an email notification sent to ${adminEmail}. Client-side code cannot do this securely or persistently. In a real system, there would likely be an admin review step.)`);
 
                 // Clear the form
                 bioSubmissionForm.reset();
                 bioSubmissionForm.style.display = 'none'; // Hide form after submission
-                console.log("New biography submitted (simulated):", newBio);
-                console.log("Current pending biographies (client-side):", pendingBios);
-                renderPendingBiographies(); // Update admin's pending list
+                console.log("New biography submitted (simulated) and published:", newBio);
             });
 
             // Handle "Contact Message" form submission (client-side simulation)
@@ -1081,23 +1056,17 @@
                 console.log('User logged out.');
             });
 
-            // Handle 'Edit' button click in pending biographies list
-            pendingBiographiesList.addEventListener('click', function(event) {
-                if (event.target.classList.contains('edit-action')) {
-                    if (currentLoggedInUser !== ADMIN_EMAIL) {
-                        alert('Only the admin can edit biographies.');
-                        return;
-                    }
-                    const indexToEdit = parseInt(event.target.getAttribute('data-index'));
-                    if (!isNaN(indexToEdit) && pendingBios[indexToEdit]) {
-                        const bioToEdit = pendingBios[indexToEdit];
-                        editorBioIndex.value = indexToEdit; // Store index for saving changes
-                        editorBioTitle.value = bioToEdit.title;
-                        editorSubmitterName.value = bioToEdit.submitter;
-                        editorBioDetails.value = bioToEdit.details;
-                        previewArea.innerHTML = bioToEdit.details; // Show initial preview
-                        alert(`Biography "${bioToEdit.title}" loaded into editor for editing.`);
-                    }
+            // Handle 'Insert Image' button click in admin editor
+            insertImageButton.addEventListener('click', function() {
+                const imageUrl = imageUrlInput.value.trim();
+                if (imageUrl) {
+                    // Added alt attribute for accessibility
+                    const imgTag = `<img src="${imageUrl}" alt="Biography Image" style="max-width:100%; height:auto; display:block; margin:10px auto;">`;
+                    insertTextAtCursor(editorBioDetails, imgTag);
+                    imageUrlInput.value = ''; // Clear the image URL input after insertion
+                    alert('Image tag inserted into editor. Click Preview to see it.');
+                } else {
+                    alert('Please enter an image URL to insert.');
                 }
             });
 
@@ -1105,24 +1074,6 @@
             previewButton.addEventListener('click', function() {
                 // IMPORTANT: In a real app, sanitize 'editorBioDetails.value' heavily before setting innerHTML to prevent XSS attacks.
                 previewArea.innerHTML = editorBioDetails.value;
-            });
-
-            // Handle 'Save Changes' button click in admin editor
-            saveChangesButton.addEventListener('click', function() {
-                if (currentLoggedInUser !== ADMIN_EMAIL) {
-                    alert('Only the admin can save changes.');
-                    return;
-                }
-                const index = parseInt(editorBioIndex.value);
-                if (!isNaN(index) && pendingBios[index]) {
-                    pendingBios[index].title = editorBioTitle.value.trim();
-                    pendingBios[index].submitter = editorSubmitterName.value.trim() || 'Anonymous';
-                    pendingBios[index].details = editorBioDetails.value.trim();
-                    alert(`Changes saved for "${pendingBios[index].title}" in pending list. \n\n(IMPORTANT for deployment: This would update your database via a backend.)`);
-                    renderPendingBiographies(); // Re-render the pending list with updated info
-                } else {
-                    alert('No pending biography selected for saving. Please select one to edit first or start a new entry.');
-                }
             });
 
             // Handle 'Publish' button click in admin editor (form submission)
@@ -1137,7 +1088,6 @@
                 const publishedTitle = editorBioTitle.value.trim();
                 const publishedSubmitter = editorSubmitterName.value.trim() || 'Anonymous';
                 const publishedDetails = editorBioDetails.value.trim();
-                const originalIndex = parseInt(editorBioIndex.value);
 
                 if (!publishedTitle || !publishedDetails) {
                     alert('Please provide a title and content in the editor before publishing.');
@@ -1150,49 +1100,13 @@
                     details: publishedDetails
                 };
 
-                // If this was an edited pending bio, remove it from pending list
-                if (!isNaN(originalIndex) && pendingBios[originalIndex]) {
-                    pendingBios.splice(originalIndex, 1);
-                }
-
                 addPublishedBiographyToHome(publishedBio); // Add to home section
                 alert(`"${publishedBio.title}" has been published to the Home page! \n\n(IMPORTANT for deployment: This action would update a database and be persistent via a backend. Server-side HTML sanitization would be crucial here to prevent XSS.)`);
-                renderPendingBiographies(); // Re-render the pending list
                 clearEditor(); // Clear editor after publishing
             });
 
             // Handle 'Clear Editor' button click
             clearEditorButton.addEventListener('click', clearEditor);
-
-            // --- AUTO-ADD BIOGRAPHY ON LOAD ---
-            // This biography will be automatically added to the pending list for admin review
-            const ndayikezeApollinaireBio = {
-                title: "Ndayikeze Apollinaire",
-                submitter: "System",
-                details: `
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <img src="https://i.ibb.co/3s3672K/apollinaire-ndayikeze.jpg" alt="Ndayikeze Apollinaire" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                    </div>
-                    <p><strong>Ndayikeze Apollinaire</strong> is a visionary Burundian leader whose multidisciplinary journey spans communication, technology, humanitarian service, and cultural advocacy.</p>
-                    <p>Born in 1982, his early life was shaped by exile across Tanzania, Mozambique, Angola, and South Africa during Burundi’s civil unrest. These formative experiences forged his deep commitment to resilience, dignity, and cross-cultural dialogue.</p>
-                    <p>Professionally, Apollinaire is recognized as a <strong>Senior Communication Advisor at the National Assembly of Burundi</strong>, where he leads initiatives in visual communication, branding, and digital media. He is also the <strong>Founder & CEO of Smart Design Experts</strong>, a platform that blends design, IT, and editorial innovation.</p>
-                    <h3>His expertise spans:</h3>
-                    <ul>
-                        <li><strong>Visual communication and media strategy</strong></li>
-                        <li><strong>IT and live streaming systems</strong></li>
-                        <li><strong>Graphic design, photography, and video editing</strong></li>
-                        <li><strong>Humanitarian work and medical consulting</strong></li>
-                        <li><strong>Multilingual interpretation and cross-cultural counseling</strong></li>
-                    </ul>
-                    <p>He holds a <strong>Master’s degree in Visual Communication & Media Studies</strong>, and is fluent in Kirundi, Kiswahili, French, English, and Portuguese.</p>
-                    <p>Apollinaire’s impact includes designing the logo of the Burundian Diaspora, creating the video intro for the National Assembly, and establishing its live streaming infrastructure. His work reflects a rare ability to integrate symbolic storytelling with technical precision, always in service of community empowerment and institutional clarity.</p>
-                    <p>Would you like a visual timeline of his achievements or a multilingual profile draft for publication?</p>
-                `
-            };
-            pendingBios.push(ndayikezeApollinaireBio);
-            renderPendingBiographies(); // Ensure it's rendered in the admin panel on load
-            // --- END AUTO-ADD BIOGRAPHY ---
-
         });
     </script>
 </body>
