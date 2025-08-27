@@ -104,33 +104,65 @@
         .ad-unit {
             text-align: center;
             margin: 20px auto;
-            padding: 20px;
+            padding: 15px;
             background-color: #fff3cd; /* Light yellow for ads */
             border: 1px dashed #ffeeba;
             border-radius: 8px;
             color: #856404; /* Dark yellow text */
             font-style: italic;
             font-size: 0.9em;
-            max-width: 728px; /* Common ad banner width */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .ad-unit.ad-banner {
-            max-width: 970px; /* Larger banner */
-            height: 90px;
-            display: flex;
+            display: flex; /* Use flex for centering content */
             align-items: center;
             justify-content: center;
+            flex-direction: column; /* Stack image and text */
+            transition: background-color 0.3s ease;
+        }
+        .ad-unit:hover {
+            background-color: #ffeeb3;
+        }
+        .ad-unit a {
+            text-decoration: none;
+            color: inherit; /* Inherit color from parent ad-unit */
+            display: block; /* Make the whole ad clickable */
+            width: 100%;
+            height: 100%;
+        }
+        .ad-unit img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .ad-unit p {
+            margin: 0;
+            padding: 0;
+            font-size: 1em;
+        }
+        .ad-unit .ad-label {
+            font-size: 0.75em;
+            color: #b18e0a;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        /* Specific ad sizes */
+        .ad-unit.ad-banner {
+            max-width: 970px; /* Leaderboard size */
+            min-height: 90px;
+            height: auto; /* Allow height to adjust */
         }
         .ad-unit.ad-square {
             max-width: 300px;
-            height: 250px;
-            margin-top: 30px;
-            margin-bottom: 30px;
+            min-height: 250px;
+            height: auto;
         }
         .ad-unit.ad-leaderboard {
             max-width: 728px;
-            height: 90px;
+            min-height: 90px;
+            height: auto;
         }
+
 
         .container {
             width: 90%; /* Responsive width */
@@ -482,10 +514,10 @@
                 min-height: 100px; /* Minimum height to ensure visibility */
             }
             .ad-unit.ad-banner, .ad-unit.ad-leaderboard {
-                height: 50px; /* Smaller height for mobile banners */
+                height: 60px; /* Smaller height for mobile banners */
             }
             .ad-unit.ad-square {
-                height: 150px; /* Smaller square ad */
+                height: 180px; /* Smaller square ad */
             }
         }
     </style>
@@ -498,7 +530,7 @@
     </header>
 
     <!-- Simulated Top Banner Ad -->
-    <div class="ad-unit ad-banner">
+    <div class="ad-unit ad-banner" id="topBannerAd">
         <p>[AD SPACE] Your top banner ad would appear here. Integrate AdSense or other network code.</p>
     </div>
 
@@ -541,7 +573,7 @@
             </div>
 
             <!-- Simulated In-Content Ad -->
-            <div class="ad-unit ad-square">
+            <div class="ad-unit ad-square" id="inContentAd">
                 <p>[AD SPACE] Your in-content square ad would appear here.</p>
             </div>
 
@@ -593,7 +625,7 @@
                 <input type="hidden" name="adminEmail" value="ndayikezeapollinaire@gmail.com">
 
                 <button type="submit">Send Submission</button>
-                <p class="disclaimer"><strong>Note:</strong> For this form to work "live" after deployment, it requires a **backend server** to receive the submission data (text and files) and process them (e.g., store in a database, send emails).</p>
+                <p class="disclaimer"><strong>Note for Deployment:</strong> This form collects data. To make it "live" and fully functional, you **must integrate a backend server** (e.g., Node.js, Python, PHP) to securely: 1) receive this data, 2) store it in a database, and 3) send email notifications. Client-side code cannot perform these actions securely or persistently.</p>
             </form>
         </div>
 
@@ -610,7 +642,7 @@
 
             <div class="admin-editor-area">
                 <h4>Biography Editor</h4>
-                <p class="disclaimer"><strong>Editor Disclaimer:</strong> This is a simple textarea. In a real application, a powerful Rich Text Editor (e.g., TinyMCE, CKEditor) would be integrated here to allow true WYSIWYG editing, and image uploads would go to a server. Basic HTML tags like `&lt;p&gt;`, `&lt;strong&gt;`, `&lt;em&gt;`, `&lt;ul&gt;`, `&lt;li&gt;`, `&lt;img src='URL'&gt;` are supported in preview for demo purposes.</p>
+                <p class="disclaimer"><strong>Editor Disclaimer:</strong> This is a simple textarea for demonstration. In a real application, a powerful Rich Text Editor (e.g., TinyMCE, CKEditor) would be integrated here to allow true WYSIWYG editing, and image uploads would go to a server. Basic HTML tags like `&lt;p&gt;`, `&lt;strong&gt;`, `&lt;em&gt;`, `&lt;ul&gt;`, `&lt;li&gt;`, `&lt;img src='URL'&gt;` are supported in preview for demo purposes. Using `&lt;img src="data:image/jpeg;base64,...` also works for direct image embedding.</p>
                 <form id="adminEditorForm" class="admin-editor-form">
                     <input type="hidden" id="editorBioIndex"> <!-- To keep track of which pending bio is being edited -->
 
@@ -636,7 +668,7 @@
                     <p>Your content will appear here when you click 'Preview'.</p>
                 </div>
             </div>
-            <p class="disclaimer"><strong>Persistence Disclaimer:</strong> All changes made and publishing actions here are client-side only and will **not persist** upon page refresh. A **server-side solution with a database** is required for permanent storage and real content management.</p>
+            <p class="disclaimer"><strong>Persistence Disclaimer:</strong> All changes and publishing actions here are **client-side only** and will **not persist** upon page refresh. A **backend server with a database** is required for permanent storage and real content management. **Server-side sanitization of HTML is crucial to prevent XSS vulnerabilities** if user-submitted content is allowed.</p>
         </div>
         <!-- End Admin Section -->
 
@@ -644,7 +676,7 @@
         <div id="auth-section" class="auth-section section-content hidden">
             <h3>Sign Up or Log In</h3>
             <p>To contribute biographies, save your favorites, or manage content, please sign up or log in.</p>
-            <p class="disclaimer"><strong>Important:</strong> Implementing secure sign-up and login with Gmail, Facebook, or traditional accounts requires a **backend server** to handle OAuth flows, user authentication, and data storage. The buttons below are placeholders and will only trigger an alert in this client-side HTML demo.</p>
+            <p class="disclaimer"><strong>Important for Deployment:</strong> Implementing secure sign-up and login with Gmail, Facebook, or traditional accounts **requires a backend server** to handle OAuth flows, user authentication, and data storage. The buttons below are client-side placeholders and will only trigger alerts in this demo.</p>
 
             <div class="social-login-buttons">
                 <button class="gmail" id="signInWithGmail">Sign Up / Log In with Gmail</button>
@@ -665,7 +697,7 @@
                 <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
                 <button type="submit">Log In</button>
-                <p class="disclaimer"><strong>Note:</strong> Traditional login also requires a **backend for secure authentication** and user management.</p>
+                <p class="disclaimer"><strong>Note for Deployment:</strong> Traditional login also requires a **backend for secure authentication** against a user database.</p>
             </form>
         </div>
         <!-- End Auth Section -->
@@ -693,7 +725,7 @@
                     <input type="hidden" name="recipientEmail" value="ndayikezeapollinaire@gmail.com">
 
                     <button type="submit">Send Message</button>
-                    <p class="disclaimer"><strong>Note:</strong> For this contact form to work "live" after deployment, it requires a **backend server** to receive the message and send an email to the administrator.</p>
+                    <p class="disclaimer"><strong>Note for Deployment:</strong> This contact form collects a message. To make it "live", you **need a backend server** to receive this message and send it as an email to the administrator.</p>
                 </form>
             </div>
         </div>
@@ -701,13 +733,13 @@
     </div>
 
     <!-- Simulated Bottom Leaderboard Ad -->
-    <div class="ad-unit ad-leaderboard">
+    <div class="ad-unit ad-leaderboard" id="bottomLeaderboardAd">
         <p>[AD SPACE] Your bottom leaderboard ad would appear here.</p>
     </div>
 
     <footer>
         <p>&copy; 2025 Global Biographies. All rights reserved.</p>
-        <p class="disclaimer"><strong>Monetization Note:</strong> These are placeholder ad units. To monetize your site, replace these divs with actual ad network code (e.g., Google AdSense, Media.net scripts).</p>
+        <p class="disclaimer"><strong>Monetization Note:</strong> These are placeholder ad units. To monetize your site, replace these divs with actual ad network code (e.g., Google AdSense, Media.net scripts) after signing up and getting approval from an ad network.</p>
     </footer>
 
     <script>
@@ -746,11 +778,89 @@
             const adminLoginButton = document.getElementById('adminLoginButton');
             const logoutButton = document.getElementById('logoutButton');
 
+            // Ad elements
+            const topBannerAd = document.getElementById('topBannerAd');
+            const inContentAd = document.getElementById('inContentAd');
+            const bottomLeaderboardAd = document.getElementById('bottomLeaderboardAd');
+
+
             // Client-side array to simulate pending biographies (NOT persistent)
             let pendingBios = [];
             // Simulate admin login state (NOT secure)
             const ADMIN_EMAIL = "ndayikezeapollinaire@gmail.com";
             let currentLoggedInUser = localStorage.getItem('loggedInUser') || null; // Simulates a logged-in user
+
+            // Simulated Ad Data
+            const adData = [
+                {
+                    title: "Discover New Biographies",
+                    image: "https://picsum.photos/id/1018/300/250",
+                    link: "#",
+                    text: "Expand your knowledge with our vast collection of inspiring lives.",
+                    type: "square"
+                },
+                {
+                    title: "Support Global Biographies",
+                    image: "https://picsum.photos/id/1016/728/90",
+                    link: "#",
+                    text: "Help us keep sharing incredible stories from around the world.",
+                    type: "leaderboard"
+                },
+                {
+                    title: "Explore History's Greatest Minds",
+                    image: "https://picsum.photos/id/1015/300/250",
+                    link: "#",
+                    text: "From ancient philosophers to modern innovators.",
+                    type: "square"
+                },
+                {
+                    title: "Your Brand Here - Advertise With Us!",
+                    image: "https://via.placeholder.com/970x90/556B2F/FFFFFF?text=Advertise+Your+Brand",
+                    link: "#",
+                    text: "Reach a curious and engaged audience.",
+                    type: "banner"
+                },
+                {
+                    title: "Read Inspiring Stories",
+                    image: "https://picsum.photos/id/1025/300/250",
+                    link: "#",
+                    text: "Dive deep into the lives of extraordinary people.",
+                    type: "square"
+                },
+                {
+                    title: "Become a Patron!",
+                    image: "https://picsum.photos/id/1019/728/90",
+                    link: "#",
+                    text: "Support our mission to chronicle human achievement.",
+                    type: "leaderboard"
+                }
+            ];
+
+            function getRandomAd(type) {
+                const filteredAds = adData.filter(ad => ad.type === type);
+                return filteredAds[Math.floor(Math.random() * filteredAds.length)];
+            }
+
+            function displayAd(adElement, type) {
+                const ad = getRandomAd(type);
+                if (ad) {
+                    adElement.innerHTML = `
+                        <a href="${ad.link}" target="_blank">
+                            <img src="${ad.image}" alt="${ad.title}">
+                            <p><strong>${ad.title}</strong></p>
+                            <p>${ad.text}</p>
+                            <span class="ad-label">Advertisement</span>
+                        </a>
+                    `;
+                }
+            }
+            
+            function refreshAds() {
+                displayAd(topBannerAd, 'banner');
+                displayAd(inContentAd, 'square');
+                displayAd(bottomLeaderboardAd, 'leaderboard');
+            }
+
 
             // Function to update UI based on login state
             function updateLoginUI() {
@@ -760,7 +870,10 @@
                     console.log(`Admin "${ADMIN_EMAIL}" is logged in.`);
                 } else {
                     adminPublishNavLink.classList.add('hidden');
-                    adminSection.classList.add('hidden'); // Hide admin section if not admin
+                    // Hide admin section content if not admin, ensure it's not visible
+                    if (!adminSection.classList.contains('hidden')) {
+                         adminSection.classList.add('hidden');
+                    }
                     logoutButton.classList.add('hidden');
                     console.log("No admin is logged in.");
                 }
@@ -814,6 +927,8 @@
             // Show the initial section (Home) on page load
             document.getElementById('home-section').classList.remove('hidden');
             updateLoginUI(); // Initial UI update based on stored login state
+            refreshAds(); // Display initial ads
+            setInterval(refreshAds, 10000); // Refresh ads every 10 seconds
 
             // Add click event listeners to navigation links
             navLinks.forEach(link => {
@@ -886,7 +1001,7 @@
                 };
 
                 pendingBios.push(newBio); // Add to our client-side pending list
-                alert(`Biography "${bioTitle}" submitted successfully! It is now pending admin review. \n\n(In a live deployment, this data and any attached file would be sent to a backend server for storage and an email notification sent to ${adminEmail}.)`);
+                alert(`Biography "${bioTitle}" submitted successfully! It is now pending admin review. \n\n(IMPORTANT for deployment: This data and any attached file would be sent to a backend server for storage, and an email notification sent to ${adminEmail}. Client-side code cannot do this securely or persistently.)`);
 
                 // Clear the form
                 bioSubmissionForm.reset();
@@ -908,7 +1023,7 @@
                     return;
                 }
 
-                alert(`Contact message sent! \n\n(In a live deployment, this message would be sent to ${recipientEmail} via a backend server.)`);
+                alert(`Contact message sent! \n\n(IMPORTANT for deployment: This message would be sent to ${recipientEmail} via a backend server. Client-side code cannot send emails.)`);
                 contactMessageForm.reset();
                 contactMessageForm.style.display = 'none';
                 console.log("Contact Message (simulated):", contactMessage);
@@ -927,7 +1042,7 @@
                 }
 
                 // This is where a real backend would verify credentials
-                alert(`Attempting to log in with Username: ${username}. \n\n(In a live deployment, this would be sent to a backend server for secure authentication against a database.)`);
+                alert(`Attempting to log in with Username: ${username}. \n\n(IMPORTANT for deployment: This requires a backend server for secure authentication against a database.)`);
                 console.log(`Traditional Login Attempt (simulated): Username=${username}, Password=${password}`);
                 traditionalLoginForm.reset();
                 traditionalLoginForm.style.display = 'none';
@@ -935,12 +1050,12 @@
 
             // Placeholder for Social Login buttons (client-side simulation)
             signInWithGmailBtn.addEventListener('click', function() {
-                alert('Initiating Gmail sign-up/login... \n\n(In a live deployment, this requires a backend server to handle Google OAuth for secure authentication.)');
+                alert('Initiating Gmail sign-up/login... \n\n(IMPORTANT for deployment: This requires a backend server to handle Google OAuth for secure authentication.)');
                 console.log('Gmail login button clicked (simulated).');
             });
 
             signInWithFacebookBtn.addEventListener('click', function() {
-                alert('Initiating Facebook sign-up/login... \n\n(In a live deployment, this requires a backend server to handle Facebook OAuth for secure authentication.)');
+                alert('Initiating Facebook sign-up/login... \n\n(IMPORTANT for deployment: This requires a backend server to handle Facebook OAuth for secure authentication.)');
                 console.log('Facebook login button clicked (simulated).');
             });
 
@@ -1003,7 +1118,7 @@
                     pendingBios[index].title = editorBioTitle.value.trim();
                     pendingBios[index].submitter = editorSubmitterName.value.trim() || 'Anonymous';
                     pendingBios[index].details = editorBioDetails.value.trim();
-                    alert(`Changes saved for "${pendingBios[index].title}" in pending list. \n\n(In a live deployment, this would update your database.)`);
+                    alert(`Changes saved for "${pendingBios[index].title}" in pending list. \n\n(IMPORTANT for deployment: This would update your database via a backend.)`);
                     renderPendingBiographies(); // Re-render the pending list with updated info
                 } else {
                     alert('No pending biography selected for saving. Please select one to edit first or start a new entry.');
@@ -1041,7 +1156,7 @@
                 }
 
                 addPublishedBiographyToHome(publishedBio); // Add to home section
-                alert(`"${publishedBio.title}" has been published to the Home page! \n\n(In a live deployment, this action would update a database and be persistent. Server-side HTML sanitization would be crucial here to prevent XSS.)`);
+                alert(`"${publishedBio.title}" has been published to the Home page! \n\n(IMPORTANT for deployment: This action would update a database and be persistent via a backend. Server-side HTML sanitization would be crucial here to prevent XSS.)`);
                 renderPendingBiographies(); // Re-render the pending list
                 clearEditor(); // Clear editor after publishing
             });
@@ -1049,8 +1164,35 @@
             // Handle 'Clear Editor' button click
             clearEditorButton.addEventListener('click', clearEditor);
 
-            // Initial render of pending bios (empty by default, but ready for new submissions)
-            renderPendingBiographies();
+            // --- AUTO-ADD BIOGRAPHY ON LOAD ---
+            // This biography will be automatically added to the pending list for admin review
+            const ndayikezeApollinaireBio = {
+                title: "Ndayikeze Apollinaire",
+                submitter: "System",
+                details: `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <img src="https://i.ibb.co/3s3672K/apollinaire-ndayikeze.jpg" alt="Ndayikeze Apollinaire" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                    </div>
+                    <p><strong>Ndayikeze Apollinaire</strong> is a visionary Burundian leader whose multidisciplinary journey spans communication, technology, humanitarian service, and cultural advocacy.</p>
+                    <p>Born in 1982, his early life was shaped by exile across Tanzania, Mozambique, Angola, and South Africa during Burundi’s civil unrest. These formative experiences forged his deep commitment to resilience, dignity, and cross-cultural dialogue.</p>
+                    <p>Professionally, Apollinaire is recognized as a <strong>Senior Communication Advisor at the National Assembly of Burundi</strong>, where he leads initiatives in visual communication, branding, and digital media. He is also the <strong>Founder & CEO of Smart Design Experts</strong>, a platform that blends design, IT, and editorial innovation.</p>
+                    <h3>His expertise spans:</h3>
+                    <ul>
+                        <li><strong>Visual communication and media strategy</strong></li>
+                        <li><strong>IT and live streaming systems</strong></li>
+                        <li><strong>Graphic design, photography, and video editing</strong></li>
+                        <li><strong>Humanitarian work and medical consulting</strong></li>
+                        <li><strong>Multilingual interpretation and cross-cultural counseling</strong></li>
+                    </ul>
+                    <p>He holds a <strong>Master’s degree in Visual Communication & Media Studies</strong>, and is fluent in Kirundi, Kiswahili, French, English, and Portuguese.</p>
+                    <p>Apollinaire’s impact includes designing the logo of the Burundian Diaspora, creating the video intro for the National Assembly, and establishing its live streaming infrastructure. His work reflects a rare ability to integrate symbolic storytelling with technical precision, always in service of community empowerment and institutional clarity.</p>
+                    <p>Would you like a visual timeline of his achievements or a multilingual profile draft for publication?</p>
+                `
+            };
+            pendingBios.push(ndayikezeApollinaireBio);
+            renderPendingBiographies(); // Ensure it's rendered in the admin panel on load
+            // --- END AUTO-ADD BIOGRAPHY ---
+
         });
     </script>
 </body>
