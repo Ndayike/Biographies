@@ -99,29 +99,7 @@
         text-transform: uppercase;
     }
 
-    .image-controls {
-        position: absolute;
-        bottom: 10px;
-        left: 210px;
-        display: flex;
-        gap: 10px;
-        z-index: 10;
-    }
-
-    .image-controls button {
-        background-color: #006633;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 0.9em;
-        transition: background-color 0.2s ease;
-    }
-
-    .image-controls button:hover {
-        background-color: #004d26;
-    }
+    /* .image-controls and its child button are removed */
 
     section {
       padding: 4rem 2rem 2rem;
@@ -171,12 +149,7 @@
       header {
         min-height: 180px;
       }
-      .image-controls {
-        left: 140px;
-        bottom: 5px;
-        flex-direction: column;
-        gap: 5px;
-      }
+      /* .image-controls media query adjustments are removed */
     }
   </style>
 </head>
@@ -195,9 +168,7 @@
       <h1>APOLLINAIRE NDAYIKEZE</h1>
       <p>Visual Communication Expert | Author | IT Specialist</p>
     </div>
-    <div class="image-controls">
-        <button id="save-image-button">Save Uploaded Image</button>
-    </div>
+    <!-- The "image-controls" div and its button are removed -->
   </div>
 </header>
   <section>
@@ -253,12 +224,11 @@
     const profilePicDisplay = document.getElementById('profile-pic-display');
     const insertImageButton = document.getElementById('insert-image-button');
     const uploadOverlay = document.getElementById('upload-overlay');
-    const overlayText = document.getElementById('overlay-text'); // Get the text span
-    const saveImageButton = document.getElementById('save-image-button');
+    const overlayText = document.getElementById('overlay-text');
 
     // Function to update image display and overlay text
     function updateImageDisplay(imageData) {
-        if (imageData) {
+        if (imageData && imageData !== "https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image") {
             profilePicDisplay.src = imageData;
             profilePicDisplay.setAttribute('data-current-image', imageData);
             overlayText.style.display = 'none'; // Hide "No Image Selected"
@@ -304,16 +274,7 @@
         }
     });
 
-    // "Save Uploaded Image" button (now acts as a confirmation/explicit save)
-    saveImageButton.addEventListener('click', () => {
-        const currentImageData = profilePicDisplay.getAttribute('data-current-image');
-        if (currentImageData && currentImageData !== "https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image") {
-            localStorage.setItem('profileImage', currentImageData); // Ensure it's in localStorage
-            alert('Image confirmed and saved permanently (locally)!');
-        } else {
-            alert('No new image to save or image is placeholder!');
-        }
-    });
+    // The 'saveImageButton' and its event listener are removed
   </script>
 </body>
 </html>
