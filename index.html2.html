@@ -32,12 +32,12 @@
       background: #fff; /* Placeholder background */
       border: 5px solid white;
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      overflow: hidden; /* Ensure image stays within bounds */
-      display: flex; /* For centering the text/button */
+      overflow: hidden;
+      display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      cursor: pointer; /* Indicate it's clickable */
+      /* cursor: pointer; Removed from container, now only on overlay/button */
     }
 
     .profile-pic {
@@ -47,7 +47,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      z-index: 1; /* Place image above the button/text */
+      z-index: 1;
     }
 
     .profile-pic-overlay {
@@ -56,20 +56,22 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+      background: rgba(0, 0, 0, 0.6); /* Slightly darker overlay for better visibility */
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column; /* Stack text and button */
       font-size: 0.9em;
       text-align: center;
-      opacity: 0; /* Hidden by default */
+      opacity: 0;
       transition: opacity 0.3s ease;
-      z-index: 2; /* Place overlay above image */
+      z-index: 2;
+      cursor: pointer; /* Indicate the overlay itself is clickable */
     }
 
     .profile-pic-container:hover .profile-pic-overlay {
-      opacity: 1; /* Show overlay on hover */
+      opacity: 1;
     }
 
     .profile-pic-overlay button {
@@ -80,7 +82,8 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 0.8em;
-      margin-top: 5px; /* Space between text and button */
+      margin-top: 10px; /* Increased space for visual separation */
+      transition: background-color 0.2s ease;
     }
 
     .profile-pic-overlay button:hover {
@@ -99,11 +102,11 @@
 
     .image-controls {
         position: absolute;
-        bottom: 10px; /* Position below the header text, adjust as needed */
-        left: 210px; /* Align with header text */
+        bottom: 10px;
+        left: 210px;
         display: flex;
-        gap: 10px; /* Space between buttons */
-        z-index: 10; /* Ensure buttons are above other content */
+        gap: 10px;
+        z-index: 10;
     }
 
     .image-controls button {
@@ -114,6 +117,7 @@
         border-radius: 5px;
         cursor: pointer;
         font-size: 0.9em;
+        transition: background-color 0.2s ease;
     }
 
     .image-controls button:hover {
@@ -171,7 +175,7 @@
       .image-controls {
         left: 140px;
         bottom: 5px;
-        flex-direction: column; /* Stack buttons on small screens */
+        flex-direction: column;
         gap: 5px;
       }
     }
@@ -183,7 +187,8 @@
     <div class="profile-pic-container">
       <img src="https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image" alt="Apollinaire Ndayikeze" class="profile-pic" id="profile-pic-display" data-current-image="">
       <div class="profile-pic-overlay" id="upload-overlay">
-        <span>Click to Upload</span>
+        <span>No Image Selected</span>
+        <button id="insert-image-button">Click to Insert Image</button>
         <input type="file" id="profile-pic-input" accept="image/*" style="display: none;">
       </div>
     </div>
@@ -247,7 +252,8 @@
   <script>
     const profilePicInput = document.getElementById('profile-pic-input');
     const profilePicDisplay = document.getElementById('profile-pic-display');
-    const profilePicContainer = document.querySelector('.profile-pic-container');
+    const insertImageButton = document.getElementById('insert-image-button'); // New button
+    const uploadOverlay = document.getElementById('upload-overlay'); // Get the overlay
     const saveImageButton = document.getElementById('save-image-button');
 
     // Load saved image from localStorage if available
@@ -256,22 +262,39 @@
         if (savedImage) {
             profilePicDisplay.src = savedImage;
             profilePicDisplay.setAttribute('data-current-image', savedImage);
+            // Hide the "No Image Selected" text if an image is loaded
+            uploadOverlay.querySelector('span').style.display = 'none';
         }
     });
 
-    profilePicContainer.addEventListener('click', () => {
-        profilePicInput.click(); // Trigger the hidden file input
+    // Make the button (and overlay) trigger the file input
+    insertImageButton.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevent event bubbling if container also has a click handler
+        profilePicInput.click();
     });
+
+    // Also make the overlay itself clickable
+    uploadOverlay.addEventListener('click', () => {
+        profilePicInput.click();
+    });
+
 
     profilePicInput.addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                profilePicDisplay.src = e.target.result; // Display the selected image
-                profilePicDisplay.setAttribute('data-current-image', e.target.result); // Store base64
+                profilePicDisplay.src = e.target.result;
+                profilePicDisplay.setAttribute('data-current-image', e.target.result);
+                // Hide the "No Image Selected" text once an image is chosen
+                uploadOverlay.querySelector('span').style.display = 'none';
             };
-            reader.readAsDataURL(file); // Read the file as a data URL
+            reader.readAsDataURL(file);
+        } else {
+            // If no file is selected (e.g., user cancels), show the text again
+            profilePicDisplay.src = "https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image"; // Reset to placeholder
+            profilePicDisplay.setAttribute('data-current-image', '');
+            uploadOverlay.querySelector('span').style.display = 'block';
         }
     });
 
