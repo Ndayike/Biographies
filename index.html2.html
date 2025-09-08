@@ -99,8 +99,6 @@
         text-transform: uppercase;
     }
 
-    /* .image-controls and its child button are removed */
-
     section {
       padding: 4rem 2rem 2rem;
       max-width: 1000px;
@@ -149,7 +147,6 @@
       header {
         min-height: 180px;
       }
-      /* .image-controls media query adjustments are removed */
     }
   </style>
 </head>
@@ -157,7 +154,8 @@
   <header>
   <div class="header-content">
     <div class="profile-pic-container">
-      <img src="https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image" alt="Apollinaire Ndayikeze" class="profile-pic" id="profile-pic-display" data-current-image="">
+      <!-- Updated default image source to the specified path -->
+      <img src="public/images/apollinaire.jpg" alt="Apollinaire Ndayikeze" class="profile-pic" id="profile-pic-display" data-current-image="">
       <div class="profile-pic-overlay" id="upload-overlay">
         <span id="overlay-text">No Image Selected</span>
         <button id="insert-image-button">Click to Insert Image</button>
@@ -165,10 +163,9 @@
       </div>
     </div>
     <div class="header-text">
-      <h1>NDAYIKEZE APOLLINAIRE</h1>
+      <h1>APOLLINAIRE NDAYIKEZE</h1>
       <p>Visual Communication Expert | Author | IT Specialist</p>
     </div>
-    <!-- The "image-controls" div and its button are removed -->
   </div>
 </header>
   <section>
@@ -226,23 +223,27 @@
     const uploadOverlay = document.getElementById('upload-overlay');
     const overlayText = document.getElementById('overlay-text');
 
+    // Define the default image URL
+    const defaultImageUrl = 'public/images/apollinaire.jpg';
+
     // Function to update image display and overlay text
     function updateImageDisplay(imageData) {
-        if (imageData && imageData !== "https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image") {
+        if (imageData && imageData !== defaultImageUrl) {
             profilePicDisplay.src = imageData;
             profilePicDisplay.setAttribute('data-current-image', imageData);
             overlayText.style.display = 'none'; // Hide "No Image Selected"
         } else {
-            profilePicDisplay.src = "https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image"; // Reset to placeholder
-            profilePicDisplay.setAttribute('data-current-image', '');
-            overlayText.style.display = 'block'; // Show "No Image Selected"
+            profilePicDisplay.src = defaultImageUrl; // Use the new default image path
+            profilePicDisplay.setAttribute('data-current-image', ''); // Clear if it's the default/placeholder
+            overlayText.style.display = 'block'; // Show "No Image Selected" if no custom image
         }
     }
 
     // Load saved image from localStorage if available on page load
     document.addEventListener('DOMContentLoaded', () => {
         const savedImage = localStorage.getItem('profileImage');
-        updateImageDisplay(savedImage); // Update display based on loaded image
+        // If a saved image exists, use it. Otherwise, use the default image.
+        updateImageDisplay(savedImage || defaultImageUrl);
     });
 
     // Make the "Click to Insert Image" button trigger the file input
@@ -269,12 +270,10 @@
             };
             reader.readAsDataURL(file); // Read the file as a data URL
         } else {
-            // If user cancels file selection, ensure display is correct
-            updateImageDisplay(localStorage.getItem('profileImage')); // Revert to previously saved or placeholder
+            // If user cancels file selection, ensure display is correct (revert to previously saved or default)
+            updateImageDisplay(localStorage.getItem('profileImage') || defaultImageUrl);
         }
     });
-
-    // The 'saveImageButton' and its event listener are removed
   </script>
 </body>
 </html>
