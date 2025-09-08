@@ -37,7 +37,6 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      /* cursor: pointer; Removed from container, now only on overlay/button */
     }
 
     .profile-pic {
@@ -56,18 +55,18 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6); /* Slightly darker overlay for better visibility */
+      background: rgba(0, 0, 0, 0.6);
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column; /* Stack text and button */
+      flex-direction: column;
       font-size: 0.9em;
       text-align: center;
       opacity: 0;
       transition: opacity 0.3s ease;
       z-index: 2;
-      cursor: pointer; /* Indicate the overlay itself is clickable */
+      cursor: pointer;
     }
 
     .profile-pic-container:hover .profile-pic-overlay {
@@ -82,7 +81,7 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 0.8em;
-      margin-top: 10px; /* Increased space for visual separation */
+      margin-top: 10px;
       transition: background-color 0.2s ease;
     }
 
@@ -187,7 +186,7 @@
     <div class="profile-pic-container">
       <img src="https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image" alt="Apollinaire Ndayikeze" class="profile-pic" id="profile-pic-display" data-current-image="">
       <div class="profile-pic-overlay" id="upload-overlay">
-        <span>No Image Selected</span>
+        <span id="overlay-text">No Image Selected</span>
         <button id="insert-image-button">Click to Insert Image</button>
         <input type="file" id="profile-pic-input" accept="image/*" style="display: none;">
       </div>
@@ -252,62 +251,67 @@
   <script>
     const profilePicInput = document.getElementById('profile-pic-input');
     const profilePicDisplay = document.getElementById('profile-pic-display');
-    const insertImageButton = document.getElementById('insert-image-button'); // New button
-    const uploadOverlay = document.getElementById('upload-overlay'); // Get the overlay
+    const insertImageButton = document.getElementById('insert-image-button');
+    const uploadOverlay = document.getElementById('upload-overlay');
+    const overlayText = document.getElementById('overlay-text'); // Get the text span
     const saveImageButton = document.getElementById('save-image-button');
 
-    // Load saved image from localStorage if available
+    // Function to update image display and overlay text
+    function updateImageDisplay(imageData) {
+        if (imageData) {
+            profilePicDisplay.src = imageData;
+            profilePicDisplay.setAttribute('data-current-image', imageData);
+            overlayText.style.display = 'none'; // Hide "No Image Selected"
+        } else {
+            profilePicDisplay.src = "https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image"; // Reset to placeholder
+            profilePicDisplay.setAttribute('data-current-image', '');
+            overlayText.style.display = 'block'; // Show "No Image Selected"
+        }
+    }
+
+    // Load saved image from localStorage if available on page load
     document.addEventListener('DOMContentLoaded', () => {
         const savedImage = localStorage.getItem('profileImage');
-        if (savedImage) {
-            profilePicDisplay.src = savedImage;
-            profilePicDisplay.setAttribute('data-current-image', savedImage);
-            // Hide the "No Image Selected" text if an image is loaded
-            uploadOverlay.querySelector('span').style.display = 'none';
-        }
+        updateImageDisplay(savedImage); // Update display based on loaded image
     });
 
-    // Make the button (and overlay) trigger the file input
+    // Make the "Click to Insert Image" button trigger the file input
     insertImageButton.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevent event bubbling if container also has a click handler
+        event.stopPropagation(); // Prevent event bubbling
         profilePicInput.click();
     });
 
-    // Also make the overlay itself clickable
+    // Make the entire overlay clickable to trigger file input
     uploadOverlay.addEventListener('click', () => {
         profilePicInput.click();
     });
 
-
+    // Handle file selection
     profilePicInput.addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                profilePicDisplay.src = e.target.result;
-                profilePicDisplay.setAttribute('data-current-image', e.target.result);
-                // Hide the "No Image Selected" text once an image is chosen
-                uploadOverlay.querySelector('span').style.display = 'none';
+                const imageData = e.target.result;
+                updateImageDisplay(imageData); // Display the selected image
+                localStorage.setItem('profileImage', imageData); // Automatically save to localStorage
+                alert('Image uploaded and saved locally!'); // Notify user of automatic save
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(file); // Read the file as a data URL
         } else {
-            // If no file is selected (e.g., user cancels), show the text again
-            profilePicDisplay.src = "https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image"; // Reset to placeholder
-            profilePicDisplay.setAttribute('data-current-image', '');
-            uploadOverlay.querySelector('span').style.display = 'block';
+            // If user cancels file selection, ensure display is correct
+            updateImageDisplay(localStorage.getItem('profileImage')); // Revert to previously saved or placeholder
         }
     });
 
+    // "Save Uploaded Image" button (now acts as a confirmation/explicit save)
     saveImageButton.addEventListener('click', () => {
         const currentImageData = profilePicDisplay.getAttribute('data-current-image');
-        if (currentImageData) {
-            // In a real application, you would send `currentImageData` to a server.
-            // For this example, we'll store it in localStorage to simulate permanence
-            // across browser sessions (until cleared).
-            localStorage.setItem('profileImage', currentImageData);
-            alert('Image saved permanently (locally)!');
+        if (currentImageData && currentImageData !== "https://via.placeholder.com/180/003366/FFFFFF?text=Upload+Image") {
+            localStorage.setItem('profileImage', currentImageData); // Ensure it's in localStorage
+            alert('Image confirmed and saved permanently (locally)!');
         } else {
-            alert('No image uploaded to save!');
+            alert('No new image to save or image is placeholder!');
         }
     });
   </script>
